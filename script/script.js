@@ -1,189 +1,210 @@
-/* =========================================================
-   MOBILE MENU
-========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
 
-const menuButton = document.getElementById("menuButton");
-const mobileMenu = document.getElementById("mobileMenu");
+    const menuToggle =
+        document.getElementById("menuToggle");
 
-if (menuButton && mobileMenu) {
+    const mainNav =
+        document.getElementById("mainNav");
 
-    menuButton.addEventListener("click", function () {
+    const backToTop =
+        document.getElementById("backToTop");
 
-        mobileMenu.classList.toggle("open");
+    const year =
+        document.getElementById("year");
 
-        const icon = menuButton.querySelector("i");
 
-        if (mobileMenu.classList.contains("open")) {
+    /* =========================
+       CURRENT YEAR
+    ========================== */
 
-            icon.classList.remove("fa-bars");
-            icon.classList.add("fa-xmark");
+    if (year) {
 
-        } else {
+        year.textContent =
+            new Date().getFullYear();
 
-            icon.classList.remove("fa-xmark");
-            icon.classList.add("fa-bars");
-
-        }
-
-    });
-
-
-    /* CLOSE MENU AFTER CLICKING LINK */
-
-    const mobileLinks =
-        mobileMenu.querySelectorAll("a");
-
-    mobileLinks.forEach(function (link) {
-
-        link.addEventListener("click", function () {
-
-            mobileMenu.classList.remove("open");
-
-            const icon =
-                menuButton.querySelector("i");
-
-            icon.classList.remove("fa-xmark");
-            icon.classList.add("fa-bars");
-
-        });
-
-    });
-
-}
-
-
-
-/* =========================================================
-   SCROLL REVEAL
-========================================================= */
-
-const revealElements =
-    document.querySelectorAll(".reveal");
-
-
-const revealObserver =
-    new IntersectionObserver(
-
-        function (entries, observer) {
-
-            entries.forEach(function (entry) {
-
-                if (entry.isIntersecting) {
-
-                    entry.target.classList.add("active");
-
-                    observer.unobserve(entry.target);
-
-                }
-
-            });
-
-        },
-
-        {
-            threshold: 0.12
-        }
-
-    );
-
-
-revealElements.forEach(function (element) {
-
-    revealObserver.observe(element);
-
-});
-
-
-
-/* =========================================================
-   BACK TO TOP
-========================================================= */
-
-const backToTop =
-    document.getElementById("backToTop");
-
-
-if (backToTop) {
-
-    window.addEventListener("scroll", function () {
-
-        if (window.scrollY > 500) {
-
-            backToTop.classList.add("show");
-
-        } else {
-
-            backToTop.classList.remove("show");
-
-        }
-
-    });
-
-
-    backToTop.addEventListener("click", function () {
-
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
-    });
-
-}
-
-
-
-/* =========================================================
-   CURRENT YEAR
-========================================================= */
-
-const currentYear =
-    document.getElementById("currentYear");
-
-
-if (currentYear) {
-
-    currentYear.textContent =
-        new Date().getFullYear();
-
-}
-
-
-
-/* =========================================================
-   CLOSE MOBILE MENU WHEN CLICKING OUTSIDE
-========================================================= */
-
-document.addEventListener("click", function (event) {
-
-    if (!menuButton || !mobileMenu) {
-        return;
     }
 
 
-    const clickedInsideMenu =
-        mobileMenu.contains(event.target);
+    /* =========================
+       MOBILE MENU
+    ========================== */
 
-    const clickedButton =
-        menuButton.contains(event.target);
+    if (menuToggle && mainNav) {
+
+        menuToggle.addEventListener(
+            "click",
+            () => {
+
+                const isOpen =
+                    mainNav.classList.toggle("open");
 
 
-    if (
-        mobileMenu.classList.contains("open") &&
-        !clickedInsideMenu &&
-        !clickedButton
-    ) {
+                menuToggle.setAttribute(
+                    "aria-expanded",
+                    String(isOpen)
+                );
 
-        mobileMenu.classList.remove("open");
 
-        const icon =
-            menuButton.querySelector("i");
+                menuToggle.innerHTML =
+                    isOpen
 
-        icon.classList.remove("fa-xmark");
-        icon.classList.add("fa-bars");
+                    ? '<i class="fa-solid fa-xmark"></i>'
+
+                    : '<i class="fa-solid fa-bars"></i>';
+
+            }
+        );
+
+
+        /* Close menu after clicking link */
+
+        mainNav
+            .querySelectorAll("a")
+            .forEach((link) => {
+
+                link.addEventListener(
+                    "click",
+                    () => {
+
+                        mainNav.classList.remove(
+                            "open"
+                        );
+
+
+                        menuToggle.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+
+
+                        menuToggle.innerHTML =
+                            '<i class="fa-solid fa-bars"></i>';
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    /* =========================
+       SCROLL REVEAL
+    ========================== */
+
+    const revealItems =
+        document.querySelectorAll(".reveal");
+
+
+    if ("IntersectionObserver" in window) {
+
+        const revealObserver =
+            new IntersectionObserver(
+                (entries, observer) => {
+
+                    entries.forEach(
+                        (entry) => {
+
+                            if (
+                                entry.isIntersecting
+                            ) {
+
+                                entry.target.classList.add(
+                                    "active"
+                                );
+
+
+                                observer.unobserve(
+                                    entry.target
+                                );
+
+                            }
+
+                        }
+                    );
+
+                },
+                {
+                    threshold: 0.12
+                }
+            );
+
+
+        revealItems.forEach(
+            (item) => {
+
+                revealObserver.observe(
+                    item
+                );
+
+            }
+        );
+
+    } else {
+
+        revealItems.forEach(
+            (item) => {
+
+                item.classList.add(
+                    "active"
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================
+       BACK TO TOP
+    ========================== */
+
+    const handleScroll = () => {
+
+        if (!backToTop) {
+            return;
+        }
+
+
+        if (window.scrollY > 500) {
+
+            backToTop.classList.add(
+                "show"
+            );
+
+        } else {
+
+            backToTop.classList.remove(
+                "show"
+            );
+
+        }
+
+    };
+
+
+    window.addEventListener(
+        "scroll",
+        handleScroll,
+        {
+            passive: true
+        }
+    );
+
+
+    if (backToTop) {
+
+        backToTop.addEventListener(
+            "click",
+            () => {
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            }
+        );
 
     }
 
